@@ -1,0 +1,26 @@
+version: "2.1"
+
+services:
+
+########################### MongoDB ###########################
+
+    mongodb:
+      image: mongo:latest
+      ports:
+        - 2222:27017
+      volumes:
+        - /data/db
+        - /data/configdb
+
+################## SEARCH MICROSERVICE V2 #####################
+
+    image-resize:
+      build:
+        context: '.'
+      volumes:
+        - ./:/var/www/image-resize/
+        - /var/www/image-resize/node_modules
+      depends_on:
+        - mongodb
+      ports:
+        - 12345:8080

@@ -1,8 +1,6 @@
-'use strict';
+const url = require('url');
 
-var url = require('url');
-
-var Default = require('./DefaultService');
+const Default = require('./DefaultService');
 
 module.exports.deleteImage = function deleteImage (req, res, next) {
   Default.deleteImage(req.swagger.params, res, next);
