@@ -4,14 +4,26 @@ const router = express.Router();
 const bodyParser = require('body-parser');
 const logger = require('morgan');
 
+const errorMiddleware = require('./middleware/error');
 const imageRoutes = require('./routes/images');
+const uploadRoutes = require('./routes/upload');
 
 router.use('/images', imageRoutes);
+router.use('/upload', uploadRoutes);
+
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
+// apply header to all responses
+app.use((req, res, next) => {
+    res.setHeader('Content-Type', 'application/json');
+    next();
+});
+
 app.use('/v1/', router);
+
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
@@ -21,15 +33,6 @@ app.use((req, res, next) => {
 });
 
 // error handler
-app.use((err, req, res, next) => {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
-});
-
+app.use(errorMiddleware);
 
 module.exports = app;
