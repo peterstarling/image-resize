@@ -10,6 +10,15 @@ const imageSchema = new Schema({
     width: { type: Number, required: true },
     height: { type: Number, required: true },
     content: { type: Buffer, required: true },
+}, {
+    toJSON: {
+        transform: (doc, ret) => {
+            delete ret.content;
+            delete ret._id;
+            delete ret.__v;
+            ret.url = doc.url;
+        }
+    }
 });
 
 imageSchema.virtual('url').get(function () {
