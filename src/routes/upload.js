@@ -1,10 +1,16 @@
 const router = require('express').Router();
+const upload = require('../middleware/image-upload');
 const basicAuth = require('../middleware/basic-auth');
-const imageValidation = require('../validation/image-validation');
 const validationMiddleware = require('../middleware/validation');
+const imageValidation = require('../validation/image-validation');
+const UploadController = require('../controllers/upload-controller');
 
-router.post('/', [basicAuth, validationMiddleware.validate(imageValidation)], function (req, res, next) {
-    res.json({});
-});
+const uploadController = new UploadController();
+
+router.post(
+    '/',
+    [basicAuth, upload.single('fileData'), validationMiddleware.validate(imageValidation)],
+    uploadController.upload.bind(uploadController)
+);
 
 module.exports = router;

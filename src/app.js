@@ -3,6 +3,11 @@ const app = express();
 const router = express.Router();
 const bodyParser = require('body-parser');
 const logger = require('morgan');
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://mongodb/images', {
+    useMongoClient: true
+});
 
 const errorMiddleware = require('./middleware/error');
 const imageRoutes = require('./routes/images');
