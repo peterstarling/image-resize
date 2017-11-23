@@ -3,10 +3,12 @@ const BadRequestError = require('../errors/bad-request-error');
 
 const validate = (schema) => {
     return (req, res, next) => {
-        const { body } = req;
+        const { body, params, query } = req;
         delete body.access_token;
+        
+        const input = { ...body, ...query, ...params };
 
-        Joi.validate(body, schema, { abortEarly: false }, (err, schemaResult) => {
+        Joi.validate(input, schema, { abortEarly: false }, (err, schemaResult) => {
             if (err) {
                 const details = [];
                 err.details.forEach((d) => {

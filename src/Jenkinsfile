@@ -1,0 +1,73 @@
+#!/usr/bin/env groovy
+
+node('MS_Staging') {
+
+
+    currentBuild.result = "SUCCESS"
+
+    try {
+
+    	notifyBuild('STARTED')
+       	
+       	stage('Checkout'){
+
+        	checkout scm
+
+          	gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+		  	shortCommit = gitCommit.take(10)
+
+       	}
+
+       	stage('Build'){
+
+       		sh "docker build --pull=true -t yopa-ms-search:${shortCommit} ."
+       	}
+
+       	stage('Check coverage'){
+
+       		sh "docker run -i yopa-ms-search:${shortCommit} npm run coverage-check"
+
+       	}
+
+       	stage('Test'){
+
+       		sh "docker run -i --rm yopa-ms-search:${shortCommit} npm test"
+
+       	}
+
+
+    } catch (err) {
+
+        currentBuild.result = "FAILURE"
+
+        throw err
+    } finally {
+		notifyBuild(currentBuild.result)
+	}
+}
+
+def notifyBuild(String buildStatus = 'STARTED') {
+	// build status of null means successful
+	buildStatus =  buildStatus ?: 'SUCCESS'
+
+	// Default values
+	def colorName = 'RED'
+	def colorCode = '#FF0000'
+	def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
+	def summary = "${subject} (${env.BUILD_URL})"
+
+	// Override default values based on build status
+	if (buildStatus == 'STARTED') {
+	color = 'YELLOW'
+	colorCode = '#FFFF80'
+	} else if (buildStatus == 'SUCCESS') {
+	color = 'GREEN'
+	colorCode = '#BDFFC3'
+	} else {
+	color = 'RED'
+	colorCode = '#FF0000'
+	}
+
+	// Send notifications
+	slackSend (channel: "#jenkins-ci", color: colorCode, message: summary)
+}

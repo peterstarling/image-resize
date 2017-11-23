@@ -1,7 +1,8 @@
+const auth = require('../config/auth');
 const basicAuth = require('express-basic-auth');
 
 module.exports = basicAuth({
-    users: { 'admin': 'supersecret' },
+    users: { [auth.user]: auth.password },
     unauthorizedResponse: { 
         status: 'ERROR',
         code: 401,

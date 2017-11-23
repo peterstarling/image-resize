@@ -12,9 +12,11 @@ mongoose.connect('mongodb://mongodb/images', {
 const errorMiddleware = require('./middleware/error');
 const imageRoutes = require('./routes/images');
 const uploadRoutes = require('./routes/upload');
+const resizeRoutes = require('./routes/resize');
 
 router.use('/images', imageRoutes);
 router.use('/upload', uploadRoutes);
+router.use('/resize', resizeRoutes);
 
 
 app.use(logger('dev'));
