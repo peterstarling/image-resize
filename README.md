@@ -1,7 +1,7 @@
 # Image Resizing app
 
 ## Overview
-Express based simple http app for uploading images and resizing them
+Express-based http app for uploading images and resizing them on the go
 
 ### Config
 All configuration is stored in `.env` file which is used both by docker-compose and the app.
@@ -9,7 +9,7 @@ All configuration is stored in `.env` file which is used both by docker-compose 
 ### Start
 To deploy for local development do:
 
-```
+```sh
 docker-compose up
 ```
 
@@ -17,12 +17,12 @@ docker-compose up
 
 Preferably inside the container
 
-```
+```sh
 npm test
 ```
 or
 
-```
+```sh
 docker exec {app_container_name} npm test
 ```
 Where `{app_container_name}` is the name of the container (found in `docker ps` for example).
