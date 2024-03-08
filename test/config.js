@@ -1,3 +1,3 @@
 require('dotenv').config();
 
-console.log("something else")
+console.log("else")
